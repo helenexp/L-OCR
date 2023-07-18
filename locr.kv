@@ -1,0 +1,226 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#: import Window kivy.core.window.Window
+#: import Clipboard kivy.core.clipboard.Clipboard
+
+<ImageScreenManager>:
+
+    DepartScreen:
+    FichierScreen:
+    ImageScreen:
+    TexteScreen:
+
+
+<DepartScreen>:
+    name: "depart"
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "L-OCR"
+            md_bg_color: 0,0,1,1
+            specific_text_color: 1,1,1,1
+            elevation: 4
+            right_action_items: [["home"]]
+        MDLabel:
+            padding: 10,10,10,10
+            size_hint: 1,0.3
+            text: "Logiciel de reconnaissance optique de caractères"
+            font_size: 25
+            halign : "center"
+
+        MDFloatLayout:
+            MDRectangleFlatButton:
+                pos_hint: {'center_x': 0.5, 'y': 0.6}
+                size_hint: 0.3,0.1
+                text: "Ouvrir une image"
+                font_size: 20
+                line_width: 1.2
+                text_color: "blue"
+                line_color: "blue"
+                on_release: root.manager.transition = NoTransition(); app.root.current = "fichier"
+
+
+<FichierScreen>:
+    name: "fichier"
+    id: my_widget
+    MDBoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        spacing : 50
+        padding: 0,0,0,30
+        MDTopAppBar:
+            title: "L-OCR"
+            md_bg_color: 0,0,1,1
+            specific_text_color: 1,1,1,1
+            elevation: 4
+            right_action_items: [["home", lambda x: root.manager.ecran_depart(), "retourner à l'écran de départ"]]
+        MDCard:
+            radius: 36
+            md_bg_color: 0.62,0.71,1,1
+            pos_hint: {"center_x": .5, "center_y": .5}
+            size_hint: .8, .3
+            elevation: 3
+
+            FileChooserIconView:
+                id: filechooser
+                filters : ["*.png","*.jpg","*.gif"]
+                on_selection: my_widget.selected(filechooser.selection)
+
+
+
+<ImageScreen>:
+    name: "image"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "L-OCR"
+            md_bg_color: 0,0,1,1
+            specific_text_color: 1,1,1,1
+            elevation: 4
+            right_action_items: [["home", lambda x: root.manager.ecran_depart(), "retourner à l'écran de départ"]]
+        MDScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            size: root.width, root.height
+            scroll_y : 0
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: self.minimum_height
+                padding: 30,50,30,50
+                spacing : 50
+
+                MDRectangleFlatButton:
+                    size_hint: .7,0.2
+                    font_size: 20
+                    line_width: 1.2
+                    text_color: "blue"
+                    line_color: "blue"
+                    text: "Ouvrir une autre image"
+                    pos_hint: {"center_x":.5}
+                    on_release: app.root.current = "fichier"
+
+                MDCard:
+                    radius: 36
+                    md_bg_color: 0.89,0.9,1,0.5
+                    pos_hint: {"center_x": 0.5}
+                    size_hint: 0.9,None
+                    height: Window.height*0.8
+
+                    Image:
+                        size_hint: 0.8,0.8
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        radius: 36, 36, 36, 36
+
+                        id: my_image
+                        source: root.manager.image
+
+                MDRaisedButton:
+                    size_hint: .7, 0.2
+                    md_bg_color: "blue"
+                    text: "Extraire le texte"
+                    font_size: 20
+                    elevation: 4
+                    pos_hint: {"center_x":.5}
+                    on_release: root.get_text()
+
+<TexteScreen>:
+    name: "texte"
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "L-OCR"
+            md_bg_color: 0,0,1,1
+            specific_text_color: 1,1,1,1
+            elevation: 4
+            right_action_items: [["home", lambda x: root.manager.ecran_depart(), "retourner à l'écran de départ"]]
+
+        MDScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            size: root.width, root.height
+            scroll_y : 0
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint: 1, None
+                height: self.minimum_height
+                padding: (30,50,30,50)
+                spacing : 50
+
+
+                MDRectangleFlatButton:
+                    size_hint: .7,0.2
+                    font_size: 20
+                    line_width: 1.2
+                    text_color: "blue"
+                    line_color: "blue"
+                    text: "Ouvrir une autre image"
+                    pos_hint: {"center_x":.5}
+                    on_release: app.root.current = "fichier"
+
+                MDCard:
+                    radius: 36
+                    md_bg_color: 0.89,0.91,1,0.5
+                    pos_hint: {"center_x": 0.5}
+                    size_hint: 0.9,None
+                    height: Window.height*0.8
+
+                    Image:
+                        size_hint: 0.8,0.8
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        radius: 36, 36, 36, 36
+
+                        id: my_image
+                        source: root.manager.image
+
+
+
+                MDTextField:
+                    id: my_textinput
+                    mode: "fill"
+                    hint_text : "Texte extrait :"
+                    font_name: 'fonts/NotoSansJP-Regular.ttf'
+                    font_size: 20
+                    multiline: True
+                    size_hint : 0.9, None
+                    height: Window.height*0.7
+                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                    text: root.manager.texte
+                    line_color_normal: "blue"
+                    fill_color_normal: 0.89,0.91,1,0.5
+                    text_color_normal: 0,0,0,1
+                    text_color_focus: 0,0,0,1
+                    hint_text_color_normal: "blue"
+                    padding : 20,20,20,20
+                    on_text : root.texte_modifie()
+
+
+
+
+
+
+
+
+                MDRoundFlatIconButton:
+                    id : bouton_copier_texte
+                    text: "Copier le texte"
+                    icon: "content-copy"
+                    text_color: "blue"
+                    size_hint: .7, 0.2
+                    pos_hint: {"center_x": .5}
+                    on_press : Clipboard.copy(my_textinput.text)
+                    on_release: root.bouton_copier()
+
+
+
+
+
+
+
+
